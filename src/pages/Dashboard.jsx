@@ -9,7 +9,7 @@ import DocumentDrawer from '../components/DocumentDrawer';
 const TIERS   = ['All', 'Hot', 'Cool', 'Cold', 'Archive'];
 const DEPTS   = ['All', 'Finance', 'HR', 'Engineering', 'Legal', 'Product', 'Marketing'];
 
-export default function Dashboard({ onUploadClick }) {
+export default function Dashboard() {
   const [tier, setTier]           = useState('All');
   const [dept, setDept]           = useState('All');
   const [page, setPage]           = useState(1);
@@ -33,18 +33,13 @@ export default function Dashboard({ onUploadClick }) {
   return (
     <div style={{ padding: '28px 32px', minHeight: '100%' }}>
       {/* Header */}
-      <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', marginBottom: 28 }}>
-        <div className="animate-fade-up">
-          <h1 style={{ fontFamily: 'var(--font-display)', fontWeight: 800, fontSize: 26, color: 'var(--text)', lineHeight: 1.1 }}>
-            Document Vault
-          </h1>
-          <p style={{ color: 'var(--muted)', fontSize: 13, marginTop: 4 }}>
-            {total} documents across all tiers
-          </p>
-        </div>
-        <button onClick={onUploadClick} style={uploadBtnStyle}>
-          + New Document
-        </button>
+      <div className="animate-fade-up" style={{ marginBottom: 28 }}>
+        <h1 style={{ fontFamily: 'var(--font-display)', fontWeight: 800, fontSize: 26, color: 'var(--text)', lineHeight: 1.1 }}>
+          Document Vault
+        </h1>
+        <p style={{ color: 'var(--muted)', fontSize: 13, marginTop: 4 }}>
+          {total} documents across all tiers
+        </p>
       </div>
 
       {/* Stats */}
@@ -104,11 +99,4 @@ export default function Dashboard({ onUploadClick }) {
     </div>
   );
 }
-
-const uploadBtnStyle = {
-  padding: '9px 18px', borderRadius: 9, border: '1px solid rgba(0,107,69,0.35)',
-  background: 'rgba(0,107,69,0.10)', color: 'var(--accent)', fontSize: 13, fontWeight: 700,
-  cursor: 'pointer', fontFamily: 'var(--font-display)', letterSpacing: '0.02em',
-  transition: 'all 0.15s',
-};
 

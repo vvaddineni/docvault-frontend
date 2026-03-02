@@ -125,7 +125,7 @@ function AppShell() {
       {/* ── Main ── */}
       <main style={{ flex: 1, overflow: 'auto' }}>
         <Routes>
-          <Route path="/"       element={<Dashboard onUploadClick={() => setShowUpload(true)} />} />
+          <Route path="/"       element={<Dashboard />} />
           <Route path="/search" element={<SearchPage />} />
         </Routes>
       </main>
