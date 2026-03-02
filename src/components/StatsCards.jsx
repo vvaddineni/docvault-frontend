@@ -45,8 +45,6 @@ export default function StatsCards({ stats = {} }) {
         <div style={{ display: 'flex', gap: 20 }}>
           {[
             { label: 'Hot',     val: stats.hot,     color: '#ef4444' },
-            { label: 'Cool',    val: stats.cool,    color: '#06b6d4' },
-            { label: 'Cold',    val: stats.cold,    color: '#8b5cf6' },
             { label: 'Archive', val: stats.archive, color: '#6b7280' },
           ].map(({ label, val, color }) => (
             <div key={label} style={{ textAlign: 'center' }}>

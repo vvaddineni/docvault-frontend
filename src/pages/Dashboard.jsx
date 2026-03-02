@@ -6,7 +6,7 @@ import StatsCards from '../components/StatsCards';
 import DocumentTable from '../components/DocumentTable';
 import DocumentDrawer from '../components/DocumentDrawer';
 
-const TIERS   = ['All', 'Hot', 'Cool', 'Cold', 'Archive'];
+const TIERS   = ['All', 'Hot', 'Archive'];
 const DEPTS   = ['All', 'Finance', 'HR', 'Engineering', 'Legal', 'Product', 'Marketing'];
 
 export default function Dashboard() {

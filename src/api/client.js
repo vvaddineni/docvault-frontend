@@ -31,6 +31,7 @@ export const documentsApi = {
   getById:  (id)              => http.get(`/documents/${id}`),
   upload:   (formData, onProgress) => http.post('/documents/upload', formData, {
     headers: { 'Content-Type': 'multipart/form-data' },
+    timeout: 120_000,
     onUploadProgress: e => onProgress?.(Math.round((e.loaded / e.total) * 100)),
   }),
   update:   (id, body)        => http.patch(`/documents/${id}`, body),

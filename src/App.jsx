@@ -86,10 +86,7 @@ function AppShell({ onLogout }) {
               <path d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"/>
             </svg>
           </div>
-          <div>
-            <div style={{ fontFamily: 'var(--font-display)', fontWeight: 800, fontSize: 16, color: 'var(--text)', lineHeight: 1.1 }}>DocVault</div>
-            <div style={{ fontSize: 8, color: 'var(--accent-hi)', fontWeight: 700, letterSpacing: '0.1em', fontFamily: 'var(--font-mono)' }}>AZURE · CLOUD</div>
-          </div>
+          <div style={{ fontFamily: 'var(--font-display)', fontWeight: 800, fontSize: 16, color: 'var(--text)' }}>DocVault</div>
         </div>
 
         {/* Nav */}
@@ -103,7 +100,7 @@ function AppShell({ onLogout }) {
               padding: '6px 14px', borderRadius: 8, textDecoration: 'none',
               fontSize: 13, fontWeight: 600, transition: 'all 0.15s',
               color: isActive ? 'var(--accent-hi)' : 'var(--muted)',
-              background: isActive ? 'rgba(37,99,235,0.12)' : 'transparent',
+              background: isActive ? 'rgba(0,107,69,0.08)' : 'transparent',
             })}>
               {icon} {label}
             </NavLink>

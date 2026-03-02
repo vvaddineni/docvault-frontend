@@ -1,8 +1,6 @@
 // src/components/DocumentTable.jsx
 const TIER_CFG = {
   Hot:     { color: '#ef4444', bg: 'rgba(239,68,68,0.12)',    dot: '#ef4444' },
-  Cool:    { color: '#06b6d4', bg: 'rgba(6,182,212,0.12)',    dot: '#06b6d4' },
-  Cold:    { color: '#8b5cf6', bg: 'rgba(139,92,246,0.12)',   dot: '#8b5cf6' },
   Archive: { color: '#6b7280', bg: 'rgba(107,114,128,0.12)',  dot: '#9ca3af' },
 };
 

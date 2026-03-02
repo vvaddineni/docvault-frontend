@@ -115,7 +115,7 @@ export default function UploadModal({ onClose }) {
         {mutation.isLoading && (
           <div style={{ marginBottom: 16 }}>
             <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 12, color: 'var(--muted)', marginBottom: 6 }}>
-              <span>Uploading via BFF → APIM → Document Service → Blob Storage…</span>
+              <span>Uploading via BFF → Document Service → Blob Storage…</span>
               <span style={{ fontFamily: 'var(--font-mono)', color: 'var(--accent-hi)', fontWeight: 700 }}>{progress}%</span>
             </div>
             <div style={{ height: 5, borderRadius: 3, background: 'var(--border)', overflow: 'hidden' }}>

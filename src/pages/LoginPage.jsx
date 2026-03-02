@@ -1,13 +1,23 @@
 // src/pages/LoginPage.jsx
 import { useState } from 'react';
+import { PublicClientApplication } from '@azure/msal-browser';
+import { msalConfig, loginRequest } from '../auth/msalConfig';
 
 const TEST_USER = { username: 'admin', password: 'docvault123' };
 
+let msalInstance = null;
+try {
+  if (msalConfig.auth.clientId) {
+    msalInstance = new PublicClientApplication(msalConfig);
+  }
+} catch (_) {}
+
 export default function LoginPage({ onLogin }) {
-  const [username, setUsername] = useState('');
-  const [password, setPassword] = useState('');
+  const [username, setUsername] = useState('admin');
+  const [password, setPassword] = useState('docvault123');
   const [error, setError]       = useState('');
   const [loading, setLoading]   = useState(false);
+  const [ssoLoading, setSsoLoading] = useState(false);
 
   const submit = e => {
     e.preventDefault();
@@ -22,6 +32,29 @@ export default function LoginPage({ onLogin }) {
       }
       setLoading(false);
     }, 400);
+  };
+
+  const handleMsLogin = async () => {
+    if (!msalInstance) {
+      setError('Microsoft SSO is not configured. Set REACT_APP_AZURE_CLIENT_ID and REACT_APP_AZURE_TENANT_ID in .env');
+      return;
+    }
+    setSsoLoading(true);
+    try {
+      await msalInstance.initialize();
+      const result = await msalInstance.loginPopup(loginRequest);
+      if (result?.accessToken) {
+        sessionStorage.setItem('access_token', result.accessToken);
+      }
+      sessionStorage.setItem('dv_auth', '1');
+      onLogin();
+    } catch (err) {
+      if (err.errorCode !== 'user_cancelled') {
+        setError(err.message || 'Microsoft sign-in failed.');
+      }
+    } finally {
+      setSsoLoading(false);
+    }
   };
 
   return (
@@ -47,10 +80,7 @@ export default function LoginPage({ onLogin }) {
               <path d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"/>
             </svg>
           </div>
-          <div>
-            <div style={{ fontFamily: 'var(--font-display)', fontWeight: 800, fontSize: 20, color: 'var(--text)', lineHeight: 1.1 }}>DocVault</div>
-            <div style={{ fontSize: 9, color: 'var(--accent-hi)', fontWeight: 700, letterSpacing: '0.1em', fontFamily: 'var(--font-mono)' }}>AZURE · CLOUD</div>
-          </div>
+          <div style={{ fontFamily: 'var(--font-display)', fontWeight: 800, fontSize: 20, color: 'var(--text)' }}>DocVault</div>
         </div>
 
         <h2 style={{ fontFamily: 'var(--font-display)', fontWeight: 800, fontSize: 22, color: 'var(--text)', marginBottom: 6 }}>
@@ -65,16 +95,14 @@ export default function LoginPage({ onLogin }) {
             <label style={labelStyle}>Username</label>
             <input
               type="text" value={username} onChange={e => setUsername(e.target.value)}
-              placeholder="admin" autoComplete="username" required
-              style={inputStyle}
+              autoComplete="username" required style={inputStyle}
             />
           </div>
           <div style={{ marginBottom: 24 }}>
             <label style={labelStyle}>Password</label>
             <input
               type="password" value={password} onChange={e => setPassword(e.target.value)}
-              placeholder="••••••••" autoComplete="current-password" required
-              style={inputStyle}
+              autoComplete="current-password" required style={inputStyle}
             />
           </div>
 
@@ -100,21 +128,37 @@ export default function LoginPage({ onLogin }) {
           </button>
         </form>
 
-        {/* Test credentials hint */}
-        <div style={{
-          marginTop: 24, padding: '10px 14px', borderRadius: 8,
-          background: 'rgba(0,107,69,0.05)', border: '1px solid var(--border)',
-        }}>
-          <div style={{ fontSize: 10, color: 'var(--accent)', fontWeight: 700, fontFamily: 'var(--font-mono)', letterSpacing: '0.08em', textTransform: 'uppercase', marginBottom: 5 }}>Test Credentials</div>
-          <div style={{ fontSize: 12, color: 'var(--muted)', fontFamily: 'var(--font-mono)' }}>
-            Username: <span style={{ color: 'var(--text)', fontWeight: 600 }}>admin</span><br/>
-            Password: <span style={{ color: 'var(--text)', fontWeight: 600 }}>docvault123</span>
-          </div>
+        {/* Divider */}
+        <div style={{ display: 'flex', alignItems: 'center', gap: 12, margin: '20px 0' }}>
+          <div style={{ flex: 1, height: 1, background: 'var(--border)' }} />
+          <span style={{ fontSize: 11, color: 'var(--muted)', fontFamily: 'var(--font-mono)', letterSpacing: '0.06em' }}>OR</span>
+          <div style={{ flex: 1, height: 1, background: 'var(--border)' }} />
         </div>
+
+        {/* Microsoft SSO */}
+        <button onClick={handleMsLogin} disabled={ssoLoading} style={{
+          width: '100%', padding: '11px', borderRadius: 10,
+          border: '1px solid var(--border-hi)', background: 'var(--surface)',
+          color: 'var(--text)', fontWeight: 600, fontSize: 13, cursor: ssoLoading ? 'not-allowed' : 'pointer',
+          display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 10,
+          opacity: ssoLoading ? 0.7 : 1, transition: 'opacity 0.15s',
+        }}>
+          <MicrosoftIcon />
+          {ssoLoading ? 'Redirecting…' : 'Sign in with Microsoft'}
+        </button>
       </div>
     </div>
   );
 }
+
+const MicrosoftIcon = () => (
+  <svg width="18" height="18" viewBox="0 0 21 21" fill="none">
+    <rect x="1"  y="1"  width="9" height="9" fill="#f25022"/>
+    <rect x="11" y="1"  width="9" height="9" fill="#7fba00"/>
+    <rect x="1"  y="11" width="9" height="9" fill="#00a4ef"/>
+    <rect x="11" y="11" width="9" height="9" fill="#ffb900"/>
+  </svg>
+);
 
 const labelStyle = {
   display: 'block', fontSize: 10, color: 'var(--muted)', fontWeight: 700,
