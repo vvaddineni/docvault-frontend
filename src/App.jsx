@@ -5,6 +5,7 @@ import { QueryClient, QueryClientProvider } from 'react-query';
 import Dashboard from './pages/Dashboard';
 import SearchPage from './pages/SearchPage';
 import UploadModal from './components/UploadModal';
+import LoginPage from './pages/LoginPage';
 
 const queryClient = new QueryClient({
   defaultOptions: { queries: { retry: 1, staleTime: 30_000 } },
@@ -61,7 +62,7 @@ const CSS = `
   .nav-link.active { color: var(--accent) !important; background: rgba(0,107,69,0.08) !important; }
 `;
 
-function AppShell() {
+function AppShell({ onLogout }) {
   const [showUpload, setShowUpload] = useState(false);
 
   return (
@@ -120,6 +121,15 @@ function AppShell() {
         }}>
           <UploadIcon /> Upload
         </button>
+
+        {/* Sign out */}
+        <button onClick={onLogout} className="btn-ghost" style={{
+          padding: '6px 12px', borderRadius: 8, border: '1px solid var(--border)',
+          background: 'transparent', color: 'var(--muted)', fontSize: 12,
+          fontWeight: 600, cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 5,
+        }}>
+          <SignOutIcon /> Sign out
+        </button>
       </header>
 
       {/* ── Main ── */}
@@ -136,16 +146,28 @@ function AppShell() {
 }
 
 export default function App() {
+  const [authed, setAuthed] = useState(() => sessionStorage.getItem('dv_auth') === '1');
+
+  if (!authed) {
+    return (
+      <>
+        <style>{CSS}</style>
+        <LoginPage onLogin={() => setAuthed(true)} />
+      </>
+    );
+  }
+
   return (
     <QueryClientProvider client={queryClient}>
       <BrowserRouter>
-        <AppShell />
+        <AppShell onLogout={() => { sessionStorage.removeItem('dv_auth'); setAuthed(false); }} />
       </BrowserRouter>
     </QueryClientProvider>
   );
 }
 
 // ── Inline SVG icons ───────────────────────────────────────────────────────
-const GridIcon   = () => <svg width="15" height="15" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>;
-const SearchIcon = () => <svg width="15" height="15" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>;
-const UploadIcon = () => <svg width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2.5"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>;
+const GridIcon    = () => <svg width="15" height="15" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>;
+const SearchIcon  = () => <svg width="15" height="15" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>;
+const UploadIcon  = () => <svg width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2.5"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>;
+const SignOutIcon = () => <svg width="13" height="13" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2"><path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>;
