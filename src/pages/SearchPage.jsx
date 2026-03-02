@@ -67,7 +67,7 @@ export default function SearchPage() {
       <div style={{ display: 'flex', gap: 10, marginBottom: 24, flexWrap: 'wrap' }}>
         {[
           { label: 'Department', value: dept, set: setDept, opts: ['', 'Finance','HR','Engineering','Legal','Product','Marketing'] },
-          { label: 'Tier',       value: tier, set: setTier, opts: ['', 'Hot','Cool','Cold','Archive'] },
+          { label: 'Tier',       value: tier, set: setTier, opts: ['', 'Hot','Archive'] },
         ].map(({ label, value, set, opts }) => (
           <select key={label} value={value} onChange={e => set(e.target.value)} style={{
             padding: '7px 13px', borderRadius: 8, border: '1px solid var(--border)',
