@@ -21,7 +21,7 @@ export default function Dashboard() {
     () => documentsApi.list({
       tier:       tier !== 'All' ? tier : undefined,
       department: dept !== 'All' ? dept : undefined,
-      page, limit: 25,
+      page, limit: 10,
     }),
     { keepPreviousData: true }
   );
@@ -82,21 +82,41 @@ export default function Dashboard() {
       />
 
       {/* Pagination */}
-      {total > 25 && (
-        <div style={{ display: 'flex', justifyContent: 'center', gap: 8, marginTop: 20 }}>
-          {Array.from({ length: Math.ceil(total / 25) }).slice(0, 7).map((_, i) => (
-            <button key={i} onClick={() => setPage(i + 1)} style={{
-              width: 34, height: 34, borderRadius: 8, border: '1px solid var(--border)',
-              background: page === i + 1 ? 'var(--accent)' : 'var(--surface)',
-              color: page === i + 1 ? '#fff' : 'var(--muted)',
-              fontSize: 13, fontWeight: 600, cursor: 'pointer',
-            }}>{i + 1}</button>
-          ))}
-        </div>
-      )}
+      <Pagination page={page} total={total} pageSize={10} onPage={setPage} />
 
       {selectedDoc && <DocumentDrawer doc={selectedDoc} onClose={() => setSelected(null)} />}
     </div>
   );
 }
+
+function Pagination({ page, total, pageSize, onPage }) {
+  const totalPages = Math.ceil(total / pageSize);
+  if (totalPages <= 1) return null;
+  const pages = Array.from({ length: totalPages }, (_, i) => i + 1);
+  const visible = pages.filter(p => p === 1 || p === totalPages || Math.abs(p - page) <= 2);
+  return (
+    <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', gap: 6, marginTop: 20 }}>
+      <button onClick={() => onPage(page - 1)} disabled={page === 1} style={navBtn(page === 1)}>‹</button>
+      {visible.reduce((acc, p, i) => {
+        if (i > 0 && p - visible[i - 1] > 1) acc.push(<span key={`gap-${p}`} style={{ color: 'var(--muted)', fontSize: 12 }}>…</span>);
+        acc.push(
+          <button key={p} onClick={() => onPage(p)} style={{
+            width: 34, height: 34, borderRadius: 8, border: '1px solid var(--border)',
+            background: page === p ? 'var(--accent)' : 'var(--surface)',
+            color: page === p ? '#fff' : 'var(--muted)',
+            fontSize: 13, fontWeight: 600, cursor: 'pointer',
+          }}>{p}</button>
+        );
+        return acc;
+      }, [])}
+      <button onClick={() => onPage(page + 1)} disabled={page === totalPages} style={navBtn(page === totalPages)}>›</button>
+    </div>
+  );
+}
+
+const navBtn = (disabled) => ({
+  width: 34, height: 34, borderRadius: 8, border: '1px solid var(--border)',
+  background: 'var(--surface)', color: disabled ? 'var(--border-hi)' : 'var(--muted)',
+  fontSize: 18, fontWeight: 600, cursor: disabled ? 'default' : 'pointer',
+});
 

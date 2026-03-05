@@ -18,49 +18,6 @@ export default function StatsCards({ stats = {} }) {
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: 14, marginBottom: 4 }}>
 
-      {/* ── Total banner ── */}
-      <div className="animate-fade-up" style={{
-        background: 'var(--surface)', border: '1px solid var(--border)',
-        borderRadius: 12, padding: '18px 24px',
-        display: 'flex', alignItems: 'center', gap: 20,
-        position: 'relative', overflow: 'hidden',
-      }}>
-        <div style={{ position: 'absolute', left: 0, top: 0, bottom: 0, width: 4,
-          background: 'linear-gradient(180deg, var(--accent), var(--cyan))',
-          borderRadius: '12px 0 0 12px' }} />
-        <div style={{ paddingLeft: 8 }}>
-          <div style={{ fontSize: 11, color: 'var(--muted)', fontWeight: 700, letterSpacing: '0.07em',
-            textTransform: 'uppercase', fontFamily: 'var(--font-mono)', marginBottom: 4 }}>
-            Total Documents
-          </div>
-          <div style={{ fontSize: 38, fontWeight: 800, color: 'var(--text)',
-            fontFamily: 'var(--font-display)', lineHeight: 1 }}>
-            {stats.total ?? '—'}
-          </div>
-        </div>
-
-        <div style={{ flex: 1 }} />
-
-        {/* Mini tier breakdown */}
-        <div style={{ display: 'flex', gap: 20 }}>
-          {[
-            { label: 'Hot',     val: stats.hot,     color: '#ef4444' },
-            { label: 'Archive', val: stats.archive, color: '#6b7280' },
-          ].map(({ label, val, color }) => (
-            <div key={label} style={{ textAlign: 'center' }}>
-              <div style={{ fontSize: 20, fontWeight: 800, color,
-                fontFamily: 'var(--font-display)', lineHeight: 1 }}>
-                {val ?? 0}
-              </div>
-              <div style={{ fontSize: 10, color: 'var(--muted)', fontFamily: 'var(--font-mono)',
-                textTransform: 'uppercase', letterSpacing: '0.06em', marginTop: 3 }}>
-                {label}
-              </div>
-            </div>
-          ))}
-        </div>
-      </div>
-
       {/* ── Department cards ── */}
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(7, 1fr)', gap: 12 }}>
         {DEPT_ORDER.map((dept, i) => {

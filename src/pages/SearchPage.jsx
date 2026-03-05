@@ -14,31 +14,34 @@ export default function SearchPage() {
   const [dateFrom, setDateFrom]   = useState('');
   const [dateTo, setDateTo]       = useState('');
   const [selectedDoc, setSelected] = useState(null);
+  const [searchPage, setSearchPage] = useState(1);
   const inputRef = useRef(null);
+  const PAGE_SIZE = 10;
 
   const switchMode = (next) => {
     setMode(next);
-    setSubmitted('');   // clear results when switching mode
+    setSubmitted('');
+    setSearchPage(1);
   };
 
   // AI Search query
   const aiQuery = useQuery(
-    ['search-ai', submitted, dept, tier, dateFrom, dateTo],
-    () => searchApi.search({ q: submitted, department: dept || undefined, tier: tier || undefined, dateFrom: dateFrom || undefined, dateTo: dateTo || undefined }),
+    ['search-ai', submitted, dept, tier, dateFrom, dateTo, searchPage],
+    () => searchApi.search({ q: submitted, department: dept || undefined, tier: tier || undefined, dateFrom: dateFrom || undefined, dateTo: dateTo || undefined, size: PAGE_SIZE, from: (searchPage - 1) * PAGE_SIZE }),
     { enabled: mode === 'ai' && !!submitted, keepPreviousData: true }
   );
 
   // Standard (Cosmos) search query
   const stdQuery = useQuery(
-    ['search-std', submitted],
-    () => searchApi.standardSearch({ q: submitted }),
+    ['search-std', submitted, searchPage],
+    () => searchApi.standardSearch({ q: submitted, page: searchPage, limit: PAGE_SIZE }),
     { enabled: mode === 'standard' && !!submitted, keepPreviousData: true }
   );
 
   const active   = mode === 'ai' ? aiQuery : stdQuery;
   const { isLoading, isFetching, data } = active;
 
-  const submit = () => { if (query.trim()) setSubmitted(query.trim()); };
+  const submit = () => { if (query.trim()) { setSubmitted(query.trim()); setSearchPage(1); } };
 
   const results = data?.results || [];
   const facets  = data?.facets  || {};
@@ -204,6 +207,7 @@ export default function SearchPage() {
             {isFetching && <span style={{ width: 14, height: 14, border: '2px solid var(--border)', borderTopColor: 'var(--accent)', borderRadius: '50%', animation: 'spin 0.7s linear infinite', display: 'inline-block' }} />}
           </div>
           <DocumentTable docs={results} loading={isLoading} onSelect={setSelected} />
+          <SearchPagination page={searchPage} total={count} pageSize={PAGE_SIZE} onPage={setSearchPage} />
         </>
       ) : (
         <div style={{ textAlign: 'center', padding: '80px 20px', color: 'var(--muted)' }}>
@@ -229,6 +233,37 @@ export default function SearchPage() {
     </div>
   );
 }
+
+function SearchPagination({ page, total, pageSize, onPage }) {
+  const totalPages = Math.ceil(total / pageSize);
+  if (totalPages <= 1) return null;
+  const pages = Array.from({ length: totalPages }, (_, i) => i + 1);
+  const visible = pages.filter(p => p === 1 || p === totalPages || Math.abs(p - page) <= 2);
+  return (
+    <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', gap: 6, marginTop: 20 }}>
+      <button onClick={() => onPage(page - 1)} disabled={page === 1} style={navBtn(page === 1)}>‹</button>
+      {visible.reduce((acc, p, i) => {
+        if (i > 0 && p - visible[i - 1] > 1) acc.push(<span key={`gap-${p}`} style={{ color: 'var(--muted)', fontSize: 12 }}>…</span>);
+        acc.push(
+          <button key={p} onClick={() => onPage(p)} style={{
+            width: 34, height: 34, borderRadius: 8, border: '1px solid var(--border)',
+            background: page === p ? 'var(--accent)' : 'var(--surface)',
+            color: page === p ? '#fff' : 'var(--muted)',
+            fontSize: 13, fontWeight: 600, cursor: 'pointer',
+          }}>{p}</button>
+        );
+        return acc;
+      }, [])}
+      <button onClick={() => onPage(page + 1)} disabled={page === totalPages} style={navBtn(page === totalPages)}>›</button>
+    </div>
+  );
+}
+
+const navBtn = (disabled) => ({
+  width: 34, height: 34, borderRadius: 8, border: '1px solid var(--border)',
+  background: 'var(--surface)', color: disabled ? 'var(--border-hi)' : 'var(--muted)',
+  fontSize: 18, fontWeight: 600, cursor: disabled ? 'default' : 'pointer',
+});
 
 const dateInput = {
   padding: '7px 11px', borderRadius: 8, border: '1px solid var(--border)',
