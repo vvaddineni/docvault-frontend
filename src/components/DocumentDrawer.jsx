@@ -34,15 +34,14 @@ export default function DocumentDrawer({ doc, onClose }) {
     setEditing(true);
   };
 
-  const downloadMutation = useMutation(
-    () => documentsApi.download(doc.id),
-    {
-      onSuccess: data => {
-        if (data?.sasUrl) window.open(data.sasUrl, '_blank');
-        else if (data?.status === 'rehydrating') setRehydrated(true);
-      },
-    }
-  );
+  const handleDownload = () => {
+    const a = document.createElement('a');
+    a.href = `/api/documents/${doc.id}/file`;
+    a.style.display = 'none';
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+  };
 
   const rehydrateMutation = useMutation(
     (priority) => documentsApi.rehydrate(doc.id, priority),
@@ -185,7 +184,7 @@ export default function DocumentDrawer({ doc, onClose }) {
             <div style={{ padding: '12px 14px', borderRadius: 9, background: 'rgba(107,114,128,0.08)', border: '1px solid rgba(107,114,128,0.25)', marginBottom: 16 }}>
               <div style={{ fontSize: 12, fontWeight: 700, color: '#9ca3af', marginBottom: 4 }}>Archive Tier</div>
               <div style={{ fontSize: 12, color: 'var(--muted)', lineHeight: 1.5 }}>
-                This document is in Azure Archive storage. Download requires rehydration before a SAS URL can be generated.
+                This document is in Azure Archive storage. Download requires rehydration (1–15 hours) before it can be retrieved.
               </div>
               <div style={{ marginTop: 10, display: 'flex', gap: 8 }}>
                 <button onClick={() => rehydrateMutation.mutate('High')} disabled={rehydrateMutation.isLoading}
@@ -222,13 +221,12 @@ export default function DocumentDrawer({ doc, onClose }) {
 
         {/* Actions */}
         <div style={{ padding: '16px 24px', borderTop: '1px solid var(--border)', display: 'flex', flexDirection: 'column', gap: 8 }}>
-          <button onClick={() => downloadMutation.mutate()} disabled={downloadMutation.isLoading || (isArchive && !rehydrated)}
+          <button onClick={handleDownload} disabled={isArchive && !rehydrated}
             style={{ width: '100%', padding: '11px', borderRadius: 9, border: 'none', cursor: isArchive && !rehydrated ? 'not-allowed' : 'pointer',
               background: isArchive && !rehydrated ? 'rgba(107,114,128,0.1)' : 'linear-gradient(135deg, var(--accent), var(--cyan))',
               color: isArchive && !rehydrated ? 'var(--muted)' : '#fff',
-              fontWeight: 700, fontSize: 13, fontFamily: 'var(--font-display)',
-              opacity: downloadMutation.isLoading ? 0.7 : 1 }}>
-            {downloadMutation.isLoading ? 'Generating SAS URL…' : isArchive && !rehydrated ? 'Rehydrate First' : '↓ Download (SAS Link, 15 min)'}
+              fontWeight: 700, fontSize: 13, fontFamily: 'var(--font-display)' }}>
+            {isArchive && !rehydrated ? 'Rehydrate First' : '↓ Download'}
           </button>
           <div style={{ display: 'flex', gap: 8 }}>
             {editing ? (
