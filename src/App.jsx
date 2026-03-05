@@ -60,6 +60,73 @@ const CSS = `
   .row-hover:hover { background: rgba(27,63,107,0.04) !important; cursor: pointer; }
   .btn-ghost:hover { background: rgba(0,0,0,0.05) !important; }
   .nav-link.active { color: var(--accent-hi) !important; background: rgba(27,63,107,0.09) !important; }
+
+  /* ── Responsive layout classes ── */
+  .page-pad { padding: 28px 32px; min-height: 100%; }
+
+  .stats-dept-grid {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 12px;
+  }
+
+  .doc-table-grid {
+    display: grid;
+    grid-template-columns: 2fr 1fr 1fr 1fr 100px 116px;
+    padding: 10px 20px;
+    align-items: center;
+  }
+
+  .col-date  { }
+  .col-size  { }
+  .col-dept  { }
+
+  .drawer-panel {
+    width: 440px;
+  }
+
+  .upload-label { display: inline; }
+  .nav-label    { display: inline; }
+
+  /* Tablet ≤ 1024px */
+  @media (max-width: 1024px) {
+    .stats-dept-grid {
+      grid-template-columns: repeat(4, 1fr);
+    }
+    .doc-table-grid {
+      grid-template-columns: 2fr 1fr 1fr 100px 116px;
+    }
+    .col-size { display: none; }
+  }
+
+  /* Mobile ≤ 768px */
+  @media (max-width: 768px) {
+    .page-pad { padding: 16px; }
+    .stats-dept-grid {
+      grid-template-columns: repeat(3, 1fr);
+    }
+    .doc-table-grid {
+      grid-template-columns: 2fr 1fr 100px 100px;
+      padding: 10px 12px;
+    }
+    .col-size { display: none; }
+    .col-date { display: none; }
+    .drawer-panel { width: 100vw; }
+    .upload-label { display: none; }
+  }
+
+  /* Small mobile ≤ 480px */
+  @media (max-width: 480px) {
+    .page-pad { padding: 12px; }
+    .stats-dept-grid {
+      grid-template-columns: repeat(2, 1fr);
+    }
+    .doc-table-grid {
+      grid-template-columns: 2fr 100px 100px;
+    }
+    .col-dept { display: none; }
+    .nav-label { display: none; }
+  }
 `;
 
 function AppShell({ onLogout }) {
@@ -103,7 +170,7 @@ function AppShell({ onLogout }) {
               color: isActive ? '#ffffff' : 'rgba(255,255,255,0.65)',
               background: isActive ? 'rgba(255,255,255,0.15)' : 'transparent',
             })}>
-              {icon} {label}
+              {icon} <span className="nav-label">{label}</span>
             </NavLink>
           ))}
         </nav>
@@ -117,7 +184,7 @@ function AppShell({ onLogout }) {
           color: '#fff', fontWeight: 700, fontSize: 13, fontFamily: 'var(--font-display)',
           letterSpacing: '0.02em', display: 'flex', alignItems: 'center', gap: 6,
         }}>
-          <UploadIcon /> Upload
+          <UploadIcon /> <span className="upload-label">Upload</span>
         </button>
 
         {/* Sign out */}

@@ -21,7 +21,7 @@ export default function DocumentDrawer({ doc, onClose, readOnly = false }) {
   const [rehydrated, setRehydrated] = useState(false);
   const [editing, setEditing]       = useState(false);
   const [draft, setDraft]           = useState({});
-  const isArchive = doc.storageTier === 'Archive';
+  const isCool = doc.storageTier === 'Cool';
 
   const startEdit = () => {
     setDraft({
@@ -75,9 +75,9 @@ export default function DocumentDrawer({ doc, onClose, readOnly = false }) {
       <div onClick={onClose} style={{ position: 'fixed', inset: 0, zIndex: 800, background: 'rgba(0,0,0,0.4)', backdropFilter: 'blur(3px)' }} />
 
       {/* Drawer */}
-      <div className="animate-slide-in" style={{
+      <div className="animate-slide-in drawer-panel" style={{
         position: 'fixed', right: 0, top: 0, bottom: 0, zIndex: 900,
-        width: 440, background: 'var(--surface)', borderLeft: '1px solid var(--border)',
+        background: 'var(--surface)', borderLeft: '1px solid var(--border)',
         display: 'flex', flexDirection: 'column', overflow: 'hidden',
         boxShadow: '-24px 0 60px rgba(0,0,0,0.5)',
       }}>
@@ -180,11 +180,11 @@ export default function DocumentDrawer({ doc, onClose, readOnly = false }) {
           )}
 
           {/* Archive warning */}
-          {isArchive && !rehydrated && (
-            <div style={{ padding: '12px 14px', borderRadius: 9, background: 'rgba(107,114,128,0.08)', border: '1px solid rgba(107,114,128,0.25)', marginBottom: 16 }}>
-              <div style={{ fontSize: 12, fontWeight: 700, color: '#9ca3af', marginBottom: 4 }}>Archive Tier</div>
+          {isCool && !rehydrated && (
+            <div style={{ padding: '12px 14px', borderRadius: 9, background: 'rgba(59,130,246,0.08)', border: '1px solid rgba(59,130,246,0.25)', marginBottom: 16 }}>
+              <div style={{ fontSize: 12, fontWeight: 700, color: '#3b82f6', marginBottom: 4 }}>Cool Tier</div>
               <div style={{ fontSize: 12, color: 'var(--muted)', lineHeight: 1.5 }}>
-                This document is in Azure Archive storage. Download requires rehydration (1–15 hours) before it can be retrieved.
+                This document is in Cool storage. Download requires rehydration before it can be retrieved.
               </div>
               <div style={{ marginTop: 10, display: 'flex', gap: 8 }}>
                 <button onClick={() => rehydrateMutation.mutate('High')} disabled={rehydrateMutation.isLoading}
@@ -202,19 +202,19 @@ export default function DocumentDrawer({ doc, onClose, readOnly = false }) {
           {rehydrated && (
             <div style={{ padding: '12px 14px', borderRadius: 9, background: 'rgba(16,185,129,0.08)', border: '1px solid rgba(16,185,129,0.3)', marginBottom: 16 }}>
               <div style={{ fontSize: 12, fontWeight: 700, color: '#10b981', marginBottom: 3 }}>Rehydration Started</div>
-              <div style={{ fontSize: 12, color: 'var(--muted)' }}>The blob is being copied from Archive to Hot tier. You'll receive a notification when it's ready.</div>
+              <div style={{ fontSize: 12, color: 'var(--muted)' }}>The blob is being rehydrated from Cool storage. You'll receive a notification when it's ready.</div>
             </div>
           )}
         </div>
 
         {/* Actions */}
         {!readOnly && <div style={{ padding: '16px 24px', borderTop: '1px solid var(--border)', display: 'flex', flexDirection: 'column', gap: 8 }}>
-          <button onClick={handleDownload} disabled={isArchive && !rehydrated}
-            style={{ width: '100%', padding: '11px', borderRadius: 9, border: 'none', cursor: isArchive && !rehydrated ? 'not-allowed' : 'pointer',
-              background: isArchive && !rehydrated ? 'rgba(107,114,128,0.1)' : 'linear-gradient(135deg, var(--accent), var(--cyan))',
-              color: isArchive && !rehydrated ? 'var(--muted)' : '#fff',
+          <button onClick={handleDownload} disabled={isCool && !rehydrated}
+            style={{ width: '100%', padding: '11px', borderRadius: 9, border: 'none', cursor: isCool && !rehydrated ? 'not-allowed' : 'pointer',
+              background: isCool && !rehydrated ? 'rgba(107,114,128,0.1)' : 'linear-gradient(135deg, var(--accent), var(--cyan))',
+              color: isCool && !rehydrated ? 'var(--muted)' : '#fff',
               fontWeight: 700, fontSize: 13, fontFamily: 'var(--font-display)' }}>
-            {isArchive && !rehydrated ? 'Rehydrate First' : '↓ Download'}
+            {isCool && !rehydrated ? 'Rehydrate First' : '↓ Download'}
           </button>
           <div style={{ display: 'flex', gap: 8 }}>
             {editing ? (

@@ -6,7 +6,7 @@ import StatsCards from '../components/StatsCards';
 import DocumentTable from '../components/DocumentTable';
 import DocumentDrawer from '../components/DocumentDrawer';
 
-const TIERS   = ['All', 'Hot', 'Archive'];
+const TIERS   = ['All', 'Hot', 'Cool'];
 const DEPTS   = ['All', 'Finance', 'HR', 'Engineering', 'Legal', 'Product', 'Marketing'];
 
 export default function Dashboard() {
@@ -31,7 +31,7 @@ export default function Dashboard() {
   const stats = statsData            || {};
 
   return (
-    <div style={{ padding: '28px 32px', minHeight: '100%' }}>
+    <div className="page-pad">
       {/* Header */}
       <div className="animate-fade-up" style={{ marginBottom: 28 }}>
         <h1 style={{ fontFamily: 'var(--font-display)', fontWeight: 800, fontSize: 26, color: 'var(--text)', lineHeight: 1.1 }}>

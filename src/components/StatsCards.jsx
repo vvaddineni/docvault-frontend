@@ -18,8 +18,43 @@ export default function StatsCards({ stats = {} }) {
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: 14, marginBottom: 4 }}>
 
+      {/* ── Tier counts ── */}
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: 12 }}>
+        {[
+          { label: 'Hot',  val: stats.hot,  color: '#ef4444', bg: 'rgba(239,68,68,0.08)',    icon: '🔥' },
+          { label: 'Cool', val: stats.cool, color: '#3b82f6', bg: 'rgba(59,130,246,0.08)',   icon: '❄️' },
+        ].map(({ label, val, color, bg, icon }) => (
+          <div key={label} className="animate-fade-up" style={{
+            background: 'var(--surface)', border: '1px solid var(--border)',
+            borderRadius: 12, padding: '16px 20px',
+            display: 'flex', alignItems: 'center', gap: 16,
+            position: 'relative', overflow: 'hidden',
+          }}>
+            <div style={{ position: 'absolute', left: 0, top: 0, bottom: 0, width: 4,
+              background: color, borderRadius: '12px 0 0 12px' }} />
+            <div style={{ paddingLeft: 8, display: 'flex', alignItems: 'center', gap: 14 }}>
+              <div style={{ width: 36, height: 36, borderRadius: 10, background: bg,
+                display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 18 }}>
+                {icon}
+              </div>
+              <div>
+                <div style={{ fontSize: 28, fontWeight: 800, color: 'var(--text)',
+                  fontFamily: 'var(--font-display)', lineHeight: 1 }}>
+                  {val ?? 0}
+                </div>
+                <div style={{ fontSize: 10, color: 'var(--muted)', fontWeight: 700,
+                  letterSpacing: '0.07em', textTransform: 'uppercase',
+                  fontFamily: 'var(--font-mono)', marginTop: 4 }}>
+                  {label} Tier
+                </div>
+              </div>
+            </div>
+          </div>
+        ))}
+      </div>
+
       {/* ── Department cards ── */}
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(7, 1fr)', gap: 12 }}>
+      <div className="stats-dept-grid">
         {DEPT_ORDER.map((dept, i) => {
           const cfg   = DEPT_CFG[dept];
           const count = deptMap[dept] ?? 0;

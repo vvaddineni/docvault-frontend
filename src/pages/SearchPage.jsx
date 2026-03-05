@@ -51,7 +51,7 @@ export default function SearchPage() {
   const isAI = mode === 'ai';
 
   return (
-    <div style={{ padding: '28px 32px', minHeight: '100%' }}>
+    <div className="page-pad">
 
       {/* Header + mode toggle */}
       <div className="animate-fade-up" style={{ marginBottom: 22, display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', gap: 16, flexWrap: 'wrap' }}>
@@ -145,7 +145,7 @@ export default function SearchPage() {
         <div style={{ display: 'flex', gap: 10, marginBottom: 24, flexWrap: 'wrap' }}>
           {[
             { label: 'Department', value: dept, set: setDept, opts: ['', 'Finance','HR','Engineering','Legal','Product','Marketing'] },
-            { label: 'Tier',       value: tier, set: setTier, opts: ['', 'Hot','Archive'] },
+            { label: 'Tier',       value: tier, set: setTier, opts: ['', 'Hot','Cool'] },
           ].map(({ label, value, set, opts }) => (
             <select key={label} value={value} onChange={e => set(e.target.value)} style={{
               padding: '7px 13px', borderRadius: 8, border: '1px solid var(--border)',

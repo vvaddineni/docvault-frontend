@@ -3,7 +3,7 @@ import { useState } from 'react';
 
 const TIER_CFG = {
   Hot:     { color: '#ef4444', bg: 'rgba(239,68,68,0.12)',    dot: '#ef4444' },
-  Archive: { color: '#6b7280', bg: 'rgba(107,114,128,0.12)',  dot: '#9ca3af' },
+  Cool:    { color: '#3b82f6', bg: 'rgba(59,130,246,0.12)',   dot: '#3b82f6' },
 };
 
 const DEPT_COLORS = {
@@ -63,8 +63,6 @@ export function MimeBadge({ mimeType }) {
   );
 }
 
-const COLS = ['2fr','1fr','1fr','1fr','100px','116px'];
-
 export default function DocumentTable({ docs = [], loading, onSelect }) {
   const [previewDoc, setPreviewDoc] = useState(null);
 
@@ -89,11 +87,16 @@ export default function DocumentTable({ docs = [], loading, onSelect }) {
     <>
       <div style={{ background: 'var(--surface)', border: '1px solid var(--border)', borderRadius: 12, overflow: 'hidden' }}>
         {/* Header */}
-        <div style={{ display: 'grid', gridTemplateColumns: COLS.join(' '), padding: '10px 20px',
+        <div className="doc-table-grid" style={{
           background: 'rgba(0,107,69,0.04)', borderBottom: '1px solid var(--border)',
           fontSize: 10, color: 'var(--muted)', fontWeight: 700, letterSpacing: '0.09em',
           textTransform: 'uppercase', fontFamily: 'var(--font-mono)' }}>
-          <span>Document</span><span>Department</span><span>Uploaded</span><span>Size</span><span>Tier</span><span></span>
+          <span>Document</span>
+          <span className="col-dept">Department</span>
+          <span className="col-date">Uploaded</span>
+          <span className="col-size">Size</span>
+          <span>Tier</span>
+          <span></span>
         </div>
 
         {docs.length === 0 ? (
@@ -103,10 +106,9 @@ export default function DocumentTable({ docs = [], loading, onSelect }) {
             <div style={{ fontSize: 12, marginTop: 4 }}>Try adjusting your filters</div>
           </div>
         ) : docs.map((doc, i) => (
-          <div key={doc.id} className="row-hover" onClick={() => onSelect(doc)}
-            style={{ display: 'grid', gridTemplateColumns: COLS.join(' '), padding: '13px 20px',
-              borderBottom: i < docs.length - 1 ? '1px solid var(--border)' : 'none',
-              alignItems: 'center', transition: 'background 0.12s',
+          <div key={doc.id} className="row-hover doc-table-grid" onClick={() => onSelect(doc)}
+            style={{ borderBottom: i < docs.length - 1 ? '1px solid var(--border)' : 'none',
+              transition: 'background 0.12s',
               animation: `fadeUp 0.3s ease ${i * 0.035}s both` }}>
 
             {/* Title + type */}
@@ -118,9 +120,9 @@ export default function DocumentTable({ docs = [], loading, onSelect }) {
               </div>
             </div>
 
-            <DeptBadge dept={doc.department} />
-            <div style={{ fontSize: 12, color: 'var(--muted)', fontFamily: 'var(--font-mono)' }}>{date(doc.uploadedAt)}</div>
-            <div style={{ fontSize: 12, color: 'var(--muted)', fontFamily: 'var(--font-mono)' }}>{fmt(doc.fileSizeBytes)}</div>
+            <div className="col-dept"><DeptBadge dept={doc.department} /></div>
+            <div className="col-date" style={{ fontSize: 12, color: 'var(--muted)', fontFamily: 'var(--font-mono)' }}>{date(doc.uploadedAt)}</div>
+            <div className="col-size" style={{ fontSize: 12, color: 'var(--muted)', fontFamily: 'var(--font-mono)' }}>{fmt(doc.fileSizeBytes)}</div>
             <TierBadge tier={doc.storageTier} />
 
             {/* Actions */}
@@ -137,8 +139,8 @@ export default function DocumentTable({ docs = [], loading, onSelect }) {
               <button
                 onClick={e => handleDownload(e, doc)}
                 title="Download"
-                disabled={doc.storageTier === 'Archive'}
-                style={{ ...actionBtn, opacity: doc.storageTier === 'Archive' ? 0.4 : 1, cursor: doc.storageTier === 'Archive' ? 'not-allowed' : 'pointer' }}
+                disabled={doc.storageTier === 'Cool'}
+                style={{ ...actionBtn, opacity: doc.storageTier === 'Cool' ? 0.4 : 1, cursor: doc.storageTier === 'Cool' ? 'not-allowed' : 'pointer' }}
               >
                 <DownloadIcon />
               </button>
@@ -182,17 +184,17 @@ export default function DocumentTable({ docs = [], loading, onSelect }) {
               </div>
               <button
                 onClick={e => handleDownload(e, previewDoc)}
-                disabled={previewDoc.storageTier === 'Archive'}
+                disabled={previewDoc.storageTier === 'Cool'}
                 style={{
                   display: 'flex', alignItems: 'center', gap: 6,
-                  padding: '6px 14px', borderRadius: 8, border: 'none', cursor: previewDoc.storageTier === 'Archive' ? 'not-allowed' : 'pointer',
-                  background: previewDoc.storageTier === 'Archive' ? 'rgba(107,114,128,0.15)' : 'linear-gradient(135deg, var(--accent), var(--cyan))',
-                  color: previewDoc.storageTier === 'Archive' ? 'var(--muted)' : '#fff',
+                  padding: '6px 14px', borderRadius: 8, border: 'none', cursor: previewDoc.storageTier === 'Cool' ? 'not-allowed' : 'pointer',
+                  background: previewDoc.storageTier === 'Cool' ? 'rgba(107,114,128,0.15)' : 'linear-gradient(135deg, var(--accent), var(--cyan))',
+                  color: previewDoc.storageTier === 'Cool' ? 'var(--muted)' : '#fff',
                   fontSize: 12, fontWeight: 700, fontFamily: 'var(--font-display)',
-                  opacity: previewDoc.storageTier === 'Archive' ? 0.6 : 1,
+                  opacity: previewDoc.storageTier === 'Cool' ? 0.6 : 1,
                 }}
               >
-                <DownloadIcon /> {previewDoc.storageTier === 'Archive' ? 'Archived' : 'Download'}
+                <DownloadIcon /> {previewDoc.storageTier === 'Cool' ? 'Cool Storage' : 'Download'}
               </button>
               <button onClick={() => setPreviewDoc(null)} style={{ background: 'none', border: 'none', color: 'var(--muted)', fontSize: 22, cursor: 'pointer', lineHeight: 1, padding: '0 4px' }}>×</button>
             </div>
@@ -213,7 +215,7 @@ export default function DocumentTable({ docs = [], loading, onSelect }) {
                 </div>
                 <button
                   onClick={e => { handleDownload(e, previewDoc); setPreviewDoc(null); }}
-                  disabled={previewDoc.storageTier === 'Archive'}
+                  disabled={previewDoc.storageTier === 'Cool'}
                   style={{
                     padding: '9px 20px', borderRadius: 9, border: 'none',
                     background: 'linear-gradient(135deg, var(--accent), var(--cyan))',
