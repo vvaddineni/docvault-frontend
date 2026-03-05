@@ -53,25 +53,19 @@ export default function SearchPage() {
   return (
     <div className="page-pad">
 
-      {/* Header + mode toggle */}
-      <div className="animate-fade-up" style={{ marginBottom: 22, display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', gap: 16, flexWrap: 'wrap' }}>
-        <div>
-          <h1 style={{ fontFamily: 'var(--font-display)', fontWeight: 800, fontSize: 26, color: 'var(--text)', lineHeight: 1.1, marginBottom: 4 }}>
-            Search Documents
-          </h1>
-          <p style={{ color: 'var(--muted)', fontSize: 13 }}>
-            {isAI
-              ? 'Powered by Azure AI Search — full-text, semantic ranking, and faceted filters'
-              : 'Standard search — queries title, author, department, tags, and description in Cosmos DB'}
-          </p>
-        </div>
+      {/* Header */}
+      <div className="animate-fade-up" style={{ marginBottom: 18 }}>
+        <h1 style={{ fontFamily: 'var(--font-display)', fontWeight: 800, fontSize: 26, color: 'var(--text)', lineHeight: 1.1, marginBottom: 4 }}>
+          Search Documents
+        </h1>
+      </div>
 
-        {/* Radio toggle */}
+      {/* Mode toggle — left-aligned above search field */}
+      <div style={{ marginBottom: 10 }}>
         <div style={{
-          display: 'flex', alignItems: 'center', gap: 2,
+          display: 'inline-flex', alignItems: 'center', gap: 2,
           padding: '4px', borderRadius: 10,
           background: 'rgba(27,63,107,0.07)', border: '1px solid var(--border)',
-          flexShrink: 0,
         }}>
           {[
             { value: 'ai',       label: 'AI Search',       desc: 'Azure AI Search index' },
@@ -86,19 +80,11 @@ export default function SearchPage() {
                 boxShadow: active ? '0 1px 4px rgba(0,0,0,0.1)' : 'none',
                 transition: 'all 0.15s',
               }}>
-                <input
-                  type="radio"
-                  name="search-mode"
-                  value={value}
-                  checked={active}
-                  onChange={() => switchMode(value)}
-                  style={{ display: 'none' }}
-                />
+                <input type="radio" name="search-mode" value={value} checked={active}
+                  onChange={() => switchMode(value)} style={{ display: 'none' }} />
                 <span style={{
                   width: 8, height: 8, borderRadius: '50%', flexShrink: 0,
-                  background: active
-                    ? (value === 'ai' ? 'var(--cyan)' : 'var(--green)')
-                    : 'var(--border-hi)',
+                  background: active ? (value === 'ai' ? 'var(--cyan)' : 'var(--green)') : 'var(--border-hi)',
                   transition: 'background 0.15s',
                 }} />
                 <span style={{
@@ -112,6 +98,11 @@ export default function SearchPage() {
             );
           })}
         </div>
+        <p style={{ color: 'var(--muted)', fontSize: 12, marginTop: 6 }}>
+          {isAI
+            ? 'Powered by Azure AI Search — full-text, semantic ranking, and faceted filters'
+            : 'Standard search — queries title, author, department, tags, and description in Cosmos DB'}
+        </p>
       </div>
 
       {/* Search input */}
