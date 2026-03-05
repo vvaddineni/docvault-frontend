@@ -16,7 +16,7 @@ function date(iso) {
   return new Date(iso).toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' });
 }
 
-export default function DocumentDrawer({ doc, onClose }) {
+export default function DocumentDrawer({ doc, onClose, readOnly = false }) {
   const qc = useQueryClient();
   const [rehydrated, setRehydrated] = useState(false);
   const [editing, setEditing]       = useState(false);
@@ -205,22 +205,10 @@ export default function DocumentDrawer({ doc, onClose }) {
               <div style={{ fontSize: 12, color: 'var(--muted)' }}>The blob is being copied from Archive to Hot tier. You'll receive a notification when it's ready.</div>
             </div>
           )}
-
-          {/* Flow info */}
-          <div style={{ padding: '12px 14px', borderRadius: 9, background: 'rgba(0,107,69,0.05)', border: '1px solid rgba(0,107,69,0.15)' }}>
-            <div style={{ fontSize: 10, color: 'var(--accent)', fontWeight: 700, letterSpacing: '0.08em', textTransform: 'uppercase', fontFamily: 'var(--font-mono)', marginBottom: 8 }}>Request Flow</div>
-            {['React SPA', 'Node.js BFF :4000', 'Azure APIM', 'Document Service :8080', 'Azure Blob Storage'].map((step, i, arr) => (
-              <div key={step} style={{ display: 'flex', alignItems: 'center', gap: 7, marginBottom: i < arr.length - 1 ? 4 : 0 }}>
-                <div style={{ width: 6, height: 6, borderRadius: '50%', background: i === arr.length - 1 ? 'var(--green)' : 'var(--accent-hi)', flexShrink: 0 }} />
-                <span style={{ fontSize: 11, color: i === arr.length - 1 ? 'var(--green)' : 'var(--muted)', fontFamily: 'var(--font-mono)' }}>{step}</span>
-                {i < arr.length - 1 && <span style={{ fontSize: 10, color: '#374151', marginLeft: 'auto' }}>→</span>}
-              </div>
-            ))}
-          </div>
         </div>
 
         {/* Actions */}
-        <div style={{ padding: '16px 24px', borderTop: '1px solid var(--border)', display: 'flex', flexDirection: 'column', gap: 8 }}>
+        {!readOnly && <div style={{ padding: '16px 24px', borderTop: '1px solid var(--border)', display: 'flex', flexDirection: 'column', gap: 8 }}>
           <button onClick={handleDownload} disabled={isArchive && !rehydrated}
             style={{ width: '100%', padding: '11px', borderRadius: 9, border: 'none', cursor: isArchive && !rehydrated ? 'not-allowed' : 'pointer',
               background: isArchive && !rehydrated ? 'rgba(107,114,128,0.1)' : 'linear-gradient(135deg, var(--accent), var(--cyan))',
@@ -248,7 +236,7 @@ export default function DocumentDrawer({ doc, onClose }) {
               </>
             )}
           </div>
-        </div>
+        </div>}
       </div>
     </>
   );

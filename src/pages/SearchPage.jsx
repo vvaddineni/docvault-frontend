@@ -145,7 +145,7 @@ export default function SearchPage() {
         </div>
       )}
 
-      {selectedDoc && <DocumentDrawer doc={selectedDoc} onClose={() => setSelected(null)} />}
+      {selectedDoc && <DocumentDrawer doc={selectedDoc} onClose={() => setSelected(null)} readOnly />}
     </div>
   );
 }
